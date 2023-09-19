@@ -7,3 +7,5 @@ head (iris) # visualize 'head' dataset
 Order<-order(iris$Sepal.Width,decreasing =T)
 Order
 iris[Order,]
+iris$colors<-ifelse(iris$Species=='setosa','purple',ifelse(iris$Species=='versicolor','blue','red'))
+iris
