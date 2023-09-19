@@ -1,0 +1,42 @@
+---
+title: "Practive 2.2 (盧玨寧 F10247009)"
+author: "Jacky LU"
+date: "2023-09-19"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+
+```{r,  eval=FALSE}
+library(dplyr)
+library(tidyr)
+
+rairuoho = read.table('C:/Users/j0893/OneDrive/桌面/Rcourse/Week3/rairuoho.txt', header=T, sep='\t', dec='.')
+rairuoho
+
+rairuoho = dplyr::select(rairuoho, -row, -column) 
+#delete meaningless part
+
+rairuoho$treatment = ifelse(rairuoho$treatment == 'nutrient', 'enriched', 'water') 
+#replace nutrient by enriched
+
+name_mix = paste0(rairuoho$spatial1, '_', rairuoho$spatial2)
+rairuoho$spatial = name_mix
+rairuoho = dplyr::select(rairuoho, -spatial1, -spatial2)
+#merge spatial 1&2
+
+rairuoho
+
+rairuoho_long = pivot_longer(rairuoho, cols = day3:day8, names_to = "day", values_to = "length")
+#reformat the data
+
+rairuoho_long
