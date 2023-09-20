@@ -40,3 +40,4 @@ rairuoho_long = pivot_longer(rairuoho, cols = day3:day8, names_to = "day", value
 #reformat the data
 
 rairuoho_long
+```
