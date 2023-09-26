@@ -1,0 +1,39 @@
+---
+title: "Practive 2.2 (盧玨寧 F10247009)"
+author: "Jacky LU"
+date: "2023-09-19"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+
+```{r,  eval=FALSE}
+before_diet= c(104, 95, 87, 77, 112)
+after_diet= c(96,  91, 81, 75, 118)
+subject= c('subject_1', 'subject_2', 'subject_3', 'subject_4', 'subject_5')
+
+weight = data.frame(before_diet, after_diet)
+rownames(weight)= subject
+
+loss=c(weight$after_diet - weight$before_diet)
+subject_num=c(1:5)
+loss_table=data.frame(subject_num, loss)
+colnames(loss_table)=c('subject','weight_loss')
+loss_table
+
+BUBBLE_DIET='R is a really helpful tool for me to analyze data in the future, and I hope I can learn pretty well to execute analysis like PCA, k-means clustering or sth else'
+
+WEIGHT_LOSS=c(subject, loss_table,  BUBBLE_DIET)
+WEIGHT_LOSS
+
+rairuoho_long
+```
