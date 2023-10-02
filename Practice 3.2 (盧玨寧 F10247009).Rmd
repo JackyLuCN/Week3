@@ -5,16 +5,7 @@ date: "2023-09-19"
 output: html_document
 ---
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
-```
-
-## R Markdown
-
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
-
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
-
+# You don't have to keep the message not concerning the weekly HW. Instead you can add the instructions here
 
 ```{r,  eval=FALSE}
 before_diet= c(104, 95, 87, 77, 112)
@@ -30,10 +21,12 @@ loss_table=data.frame(subject_num, loss)
 colnames(loss_table)=c('subject','weight_loss')
 loss_table
 
-BUBBLE_DIET='R is a really helpful tool for me to analyze data in the future, and I hope I can learn pretty well to execute analysis like PCA, k-means clustering or sth else'
+BUBBLE_DIET='R is a really helpful tool for me to analyze data in the future, and I hope I can learn pretty well to execute analysis like PCA, k-means clustering or sth else' # We will arrive to that step-by-step
 
-WEIGHT_LOSS=c(subject, loss_table,  BUBBLE_DIET)
+WEIGHT_LOSS=c(subject, loss_table,  BUBBLE_DIET) 
+
+# You have the wrong elements in your list. you need to create a list using `list()`. The first element (1) is the data frame that you called 'weight'. The second element (2) is another list with 3 elements: a vector of character (2A), a numeric vector (2B), a dataframe (2C). The third element is the message that you called: BUBBLE_DIET. Check again all these elements, and try to use list () in order to make it correctly.
+
 WEIGHT_LOSS
 
-rairuoho_long
 ```
