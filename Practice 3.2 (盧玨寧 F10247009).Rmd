@@ -5,11 +5,10 @@ date: "2023-09-19"
 output: html_document
 ---
 
-```{r,  eval=FALSE}
+```{r,  eval=TRUE}
 before_diet= c(104, 95, 87, 77, 112)
 after_diet= c(96,  91, 81, 75, 118)
 subject= c('subject_1', 'subject_2', 'subject_3', 'subject_4', 'subject_5')
-
 weight = data.frame(before_diet, after_diet)
 rownames(weight)= subject
 
@@ -17,14 +16,17 @@ loss=c(weight$after_diet - weight$before_diet)
 subject_num=c(1:5)
 loss_table=data.frame(subject_num, loss)
 colnames(loss_table)=c('subject','weight_loss')
-mylist = list(loss, subject_num, loss_table)
+message='R is a really helpful tool for me to analyze data in the future, and I hope I can learn pretty well to execute analysis like PCA, k-means clustering or sth else' # We will arrive to that step-by-step
 
-BUBBLE_DIET='R is a really helpful tool for me to analyze data in the future, and I hope I can learn pretty well to execute analysis like PCA, k-means clustering or sth else' # We will arrive to that step-by-step
 
-WEIGHT_LOSS=list(subject, mylist,  BUBBLE_DIET) 
+WEIGHT_LOSS=list(subject=subject, weight_loss=loss, Loss_table = loss_table) # 1st list with titles 
+BUBBLE_DIET=list(data_diet=weight, info_loss=WEIGHT_LOSS, comment = message)  # 2nd and final list with titles list with titles
+
+
+BUBBLE_DIET
 
 # You have the wrong elements in your list. you need to create a list using `list()`. The first element (1) is the data frame that you called 'weight'. The second element (2) is another list with 3 elements: a vector of character (2A), a numeric vector (2B), a dataframe (2C). The third element is the message that you called: BUBBLE_DIET. Check again all these elements, and try to use list () in order to make it correctly.
 
-WEIGHT_LOSS
+
 
 ```
