@@ -1,0 +1,49 @@
+---
+title: "Practice 6.3 (盧玨寧 F10247009)"
+author: "Jacky LU"
+date: "2023-10-24"
+output: html_document
+---
+```{r,  eval=TRUE}
+grow<-function(start_1, start_2){
+  num_gen = 30
+  N1 <- rep(0,10)
+  N2 <- rep(0,10)
+  generation<-1:num_gen
+  growth.rate<-1.2
+  K1<-100
+  K2<-120
+  a12<-0.8
+  a21<-0.8
+  N1[1]<-start_1
+  N2[1]<-start_2
+  for (i in 2:num_gen)  {
+    N1[i] = N1[i-1] + (growth.rate* N1[i-1] * ((K1-N1[i-1]-(a12*N2[i-1]))/K1))
+    N2[i] = N2[i-1] + (growth.rate* N2[i-1] * ((K2-N2[i-1]-(a21*N2[i-1]))/K2))
+    #N2[i-1], /K2 not *K2
+    print (N1[i])
+  }
+  if (N1[i]>2){
+  plot(N1~generation,typ="b",ylim=c(0,min(c(K1,K2))),ylab="N")
+    }  else {
+  plot(N1~generation,typ="n",ylim=c(0,min(c(K1,K2))),ylab="N")
+    }
+  print(N2[1])
+  if (N2[1]>0){
+    lines(N2~generation,typ="b",col=2)}
+}
+  
+  par(mar=c(3,3,1,1),mfrow=c(3,1),las=1)
+  
+  grow(1,0)
+  text(3, 100, "Species 1 alone", adj = 0)
+  
+  grow(0,1)
+  text(3,100,"Species 2 alone", adj = 0)
+  
+  grow(1,2)
+  text(3, 100, "Both Species competing", adj = 0)
+
+
+
+```
