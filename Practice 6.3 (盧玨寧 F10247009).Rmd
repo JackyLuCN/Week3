@@ -13,7 +13,7 @@ grow<-function(start_1, start_2){
   growth.rate<-1.2
   K1<-100
   K2<-120
-  a12<-0.8
+  a12<-1.5
   a21<-0.8
   N1[1]<-start_1
   N2[1]<-start_2
