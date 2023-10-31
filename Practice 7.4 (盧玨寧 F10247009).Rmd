@@ -1,0 +1,46 @@
+---
+title: "Practice 7.4 (盧玨寧 F10247009)"
+author: "Jacky LU"
+date: "2023-10-31"
+output: html_document
+---
+
+library(dplyr)
+library(tidyr)
+rairuoho = read.table('C:/Users/j0893/OneDrive/桌面/Rcourse/Week3/rairuoho.txt', header=T, sep='\t', dec='.')
+rairuoho = dplyr::select(rairuoho, -row, -column) 
+rairuoho$treatment = ifelse(rairuoho$treatment == 'nutrient', 'enriched', 'water')
+name_mix = paste0(rairuoho$spatial1, '_', rairuoho$spatial2)
+
+rairuoho$spatial = name_mix
+rairuoho = dplyr::select(rairuoho, -spatial1, -spatial2)
+rairuoho
+
+rairuoho_long = pivot_longer(rairuoho, cols = day3:day8, names_to = "day", values_to = "length")
+rairuoho_long
+
+my_t_test = function(x, y) {
+  mean_x = mean(x)
+  mean_y = mean(y)
+  sd_x = sd(x)
+  sd_y = sd(y)
+  
+  t_stat = (mean_x - mean_y) / sqrt((sd_x^2 / length(x)) + (sd_y^2 / length(y)))
+  
+  df = length(x) - 1  + length(y) - 1
+  
+  p_value = 2 * (1 - pt(t_stat, df))
+  
+  return(list(t_statistic = t_stat, p_value = p_value))
+}
+
+enriched= rairuoho_long[rairuoho_long$treatment == 'enriched',]$length
+water= rairuoho_long[rairuoho_long$treatment == 'water', ]$length
+
+result = my_t_test(enriched, water)
+print(result)
+
+
+```
+Explanation:
+Reject H1 since p-value=0.2366>0.05, two treatments have similar effect on the length.
