@@ -378,9 +378,38 @@ length(y)))</p>
 <p>enriched= rairuoho_long[rairuoho_long<span class="math inline">\(treatment == &#39;enriched&#39;,]\)</span>length
 water= rairuoho_long[rairuoho_long<span class="math inline">\(treatment
 == &#39;water&#39;, ]\)</span>length</p>
-<p>result = my_t_test(enriched, water) print(result)</p>
-<p>``` Reject H1 since p-value=0.2366&gt;0.05, two treatments have
-similar effect on the length.</p>
+<p>enriched_day3 = rairuoho<span class="math inline">\(day3[rairuoho\)</span>treatment == ‘enriched’]
+water_day3 = rairuoho<span class="math inline">\(day3[rairuoho\)</span>treatment == ‘water’]</p>
+<p>enriched_day4 = rairuoho<span class="math inline">\(day4[rairuoho\)</span>treatment == ‘enriched’]
+water_day4 = rairuoho<span class="math inline">\(day4[rairuoho\)</span>treatment == ‘water’]</p>
+<p>enriched_day5 = rairuoho<span class="math inline">\(day5[rairuoho\)</span>treatment == ‘enriched’]
+water_day5 = rairuoho<span class="math inline">\(day5[rairuoho\)</span>treatment == ‘water’]</p>
+<p>enriched_day6 = rairuoho<span class="math inline">\(day6[rairuoho\)</span>treatment == ‘enriched’]
+water_day6 = rairuoho<span class="math inline">\(day6[rairuoho\)</span>treatment == ‘water’]</p>
+<p>enriched_day7 = rairuoho<span class="math inline">\(day7[rairuoho\)</span>treatment == ‘enriched’]
+water_day7 = rairuoho<span class="math inline">\(day7[rairuoho\)</span>treatment == ‘water’]</p>
+<p>enriched_day8 = rairuoho<span class="math inline">\(day8[rairuoho\)</span>treatment == ‘enriched’]
+water_day8 = rairuoho<span class="math inline">\(day8[rairuoho\)</span>treatment == ‘water’]</p>
+<p>result1 = my_t_test(enriched, water) result2 =
+my_t_test(enriched_day3, water_day3) result3 = my_t_test(enriched_day4,
+water_day4) result4 = my_t_test(enriched_day5, water_day5) result5 =
+my_t_test(enriched_day6, water_day6) result6 = my_t_test(enriched_day7,
+water_day7) result7 = my_t_test(enriched_day8, water_day8)</p>
+<p>result1 #Reject H1 since p-value=0.2366&gt;0.05, two treatments have
+similar effect on the length</p>
+<p>result2 #Reject H1 since p-value=1.4794&gt;0.05, two treatments have
+similar effect on the length on day 3</p>
+<p>result3 #Reject H1 since p-value=0.9693&gt;0.05, two treatments have
+similar effect on the length on day 4</p>
+<p>result4 #Reject H1 since p-value=0.6549&gt;0.05, two treatments have
+similar effect on the length on day 5</p>
+<p>result5 #Reject H1 since p-value=0.2346&gt;0.05, two treatments have
+similar effect on the length on day 6</p>
+<p>result6 #Accept H1 since p-value=0.0079&lt;0.05, two treatments have
+different effect on the length on day 7</p>
+<p>result7 #Accpet H1 since p-value=0.0001&lt;0.05, two treatments have
+different effect on the length on day 8</p>
+<p>```</p>
 
 
 

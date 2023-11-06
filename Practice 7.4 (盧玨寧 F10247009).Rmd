@@ -37,10 +37,52 @@ my_t_test = function(x, y) {
 enriched= rairuoho_long[rairuoho_long$treatment == 'enriched',]$length
 water= rairuoho_long[rairuoho_long$treatment == 'water', ]$length
 
-result = my_t_test(enriched, water)
-print(result)
+enriched_day3 = rairuoho$day3[rairuoho$treatment == 'enriched']
+water_day3 = rairuoho$day3[rairuoho$treatment == 'water']
+
+enriched_day4 = rairuoho$day4[rairuoho$treatment == 'enriched']
+water_day4 = rairuoho$day4[rairuoho$treatment == 'water']
+
+enriched_day5 = rairuoho$day5[rairuoho$treatment == 'enriched']
+water_day5 = rairuoho$day5[rairuoho$treatment == 'water']
+
+enriched_day6 = rairuoho$day6[rairuoho$treatment == 'enriched']
+water_day6 = rairuoho$day6[rairuoho$treatment == 'water']
+
+enriched_day7 = rairuoho$day7[rairuoho$treatment == 'enriched']
+water_day7 = rairuoho$day7[rairuoho$treatment == 'water']
+
+enriched_day8 = rairuoho$day8[rairuoho$treatment == 'enriched']
+water_day8 = rairuoho$day8[rairuoho$treatment == 'water']
+
+result1 = my_t_test(enriched, water)
+result2 = my_t_test(enriched_day3, water_day3)
+result3 = my_t_test(enriched_day4, water_day4)
+result4 = my_t_test(enriched_day5, water_day5)
+result5 = my_t_test(enriched_day6, water_day6)
+result6 = my_t_test(enriched_day7, water_day7)
+result7 = my_t_test(enriched_day8, water_day8)
+
+result1
+#Reject H1 since p-value=0.2366>0.05, two treatments have similar effect on the length
+
+result2
+#Reject H1 since p-value=1.4794>0.05, two treatments have similar effect on the length on day 3
+
+result3
+#Reject H1 since p-value=0.9693>0.05, two treatments have similar effect on the length on day 4
+
+result4
+#Reject H1 since p-value=0.6549>0.05, two treatments have similar effect on the length on day 5
+
+result5
+#Reject H1 since p-value=0.2346>0.05, two treatments have similar effect on the length on day 6
+
+result6
+#Accept H1 since p-value=0.0079<0.05, two treatments have different effect on the length on day 7
+
+result7
+#Accpet H1 since p-value=0.0001<0.05, two treatments have different effect on the length on day 8
 
 
 ```
-Explanation:
-Reject H1 since p-value=0.2366>0.05, two treatments have similar effect on the length.
