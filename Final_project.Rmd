@@ -1,0 +1,330 @@
+---
+title: "Final project"
+author: "Jacky LU"
+output: html_document
+---
+title: "Further test for relationship of SST and salinity with larval fish abundance in southeast Australian estuarine"
+
+Author: Chueh-Ning, Lu 
+
+Student ID: F10247009
+
+1. Introduction
+-Larval fish surveys, categorized as part of ichthyoplankton (comprising fish eggs and larvae), serve as a valuable method for monitoring marine ecosystems and the composition of fish communities (Smith et al., 2018).
+
+-The assessment of larval fish through surveys holds significant value in ecosystem monitoring due to the diverse array of oceanographic, biological, and anthropogenic factors that impact their abundance (Smith et al., 2018).
+
+-Previous study located at east Australian coast shows a negative effect on larval abundance given strong upwelling favourable wind while a positive effect given strong downwelling favourable wind (Schilling et al., 2020). The reason why currents can affect larval abundance is possibly due to their moving ability (Schilling et al., 2019).
+
+-East Australian Current significantly impacts the area between latitudes 32°–34°S. Within this region, the continental shelf experiences a noticeable alteration in the seasonal correlation between temperature and salinity. Consequently, the EAC might exhibit reduced local retention of larvae in this particular area (Suthers et al., 2011).
+
+-Another previous study in the Gulf of Alaska points out that larval abundance is associated with sea temperature but depending on species (Doyle et al., 2009). 
+
+
+2. Methods and materials
+I use the larval fish data including samples between 30S and 36S from 1990 to 2016 to match up with the data utilized in Schilling et al., 2020. Different to the assumption of downwelling and upwelling current can affect the abundance of larval fish because of their moving ability in Schilling’s paper, I compared sea surface temperature and salinity with larval fish abundance. It is widely acknowledged that upwelling current can bring up the cold water from deep sea, so that surface temperature would be cooler and higher salinity. Schilling et al., 2020 pointed out that upwelling favourable wind has a negative effect on larval abundance, so the colder water should be with lower larval abundance.
+
+Furthermore, to see more details, I split the data by regions and species. Three regions, each with 2 degrees of latitude, is set to see whether the difference from south to north is existing. Also, to know which species is affected the most exactly, I firstly concluded all larval abundance by species, and top five larval abundance is subset. The five fish species are Myctophidae, Sardinops sagax, Pseudocaranx georgianus, Trachurus novaezelandiae, and Bothidae.
+
+Myctophidae refers to a family of small, deep-sea fish commonly known as lanternfishes. Lanternfishes are an essential part of the marine food chain, serving as a crucial food source for various larger marine animals, including whales, dolphins, squids, and larger fish. They exhibit diel vertical migration, moving vertically in the water column during the night to feed near the surface and descending to deeper waters during the day to avoid predators. Sardinops sagax, commonly known as the South American pilchard or Pacific sardine. They inhabit the open ocean, and are an important part of the marine food web, serving as prey for various larger predators, including marine mammals, seabirds, and larger fish species. Pseudocaranx georgianus, commonly known as the silver trevally or white trevally. These fish are found in coastal waters the most. The silver trevally typically inhabits shallow coastal waters, estuaries, and bays, often forming schools near rocky reefs or sandy bottoms. They are known for their strong and fast-swimming behavior. Trachurus novaezelandiae, commonly known as the yellowtail horse mackerel or jack mackerel. This species is native to the waters around New Zealand and parts of Australia, inhabiting coastal and offshore regions. Bothidae is a family of fish commonly known as the lefteye flounders or lefteye flounders. The family of this species is known for highly asymmetrical bodies with both eyes located on one side of the head. In the case of Bothidae, the eyes are positioned on the left side. They inhabit sandy or muddy bottoms along continental shelves and slopes.
+
+For all subsets, I tested them firstly by correlation analysis to know their relationships with sea surface temperature and salinity. After, linear regression model is used to know how much these two factors affect larval abundance.
+
+
+```{r,  eval=T}
+library(Hmisc)
+library(corrplot)
+library(MASS)
+library(car)
+library(interactions)
+library(yarrr)
+library(tidyr)
+library(readr)
+library(lme4)
+library (lmerTest)
+library(nlme)
+library(ggplot2)
+library(gvlma)
+library(simpleboot)
+library(DAAG)
+library(bootstrap)
+library(MBESS)
+library(leaps)
+library(sandwich)
+library(dplyr)
+library(vegan)
+library(gridExtra)
+```
+
+Import the file and clean the data
+```{r,  eval=T}
+larvae = read.csv("C:/Users/j0893/OneDrive/桌面/Rcourse/Final project/data/Larvae.csv")
+
+test = data.frame(larvae$Latitude, larvae$Longitude, larvae$Year_Local, larvae$Month_Local, larvae$Temperature_degC, larvae$Salinity_psu, larvae$Total)
+test = na.omit(test)
+colnames(test) = c("lat", "lon", "Year", "Month", "Temperature", "Salinity", "Total_abun")
+test %>% group_by(Year) %>% summarise_all(mean) %>%  select(Year, Temperature, Salinity, Total_abun)
+summary(test)
+```
+
+3. Results
+Low correlations of 0.1793662, for temperature and total abundance, and 0.2150289, for salinity and total abundance shows that these two factors have weak relationship. However, both temperature and salinity have a positive effect on total abundance though the effects are minor. The multiple linear regression model of temperature and salinity gives adjusted R-squared value of 0.05706, which indicates these two factors have very low effect on larval abundance.
+
+```{r,  eval=T}
+# Correlation test for total abundance
+x = test$Temperature
+y = test$Salinity
+z = test$Total_abun
+cor.test(x,z)
+cor.test(y,z)
+cor.test(x,y)
+
+plot1 = ggplot(test, aes(x = Temperature, y = Total_abun)) + 
+  geom_point() +
+  stat_smooth(method = "lm", col = "red") +
+  labs(title = "Temperature effect on total abundance")
+plot2 = ggplot(test, aes(x = Salinity, y = Total_abun)) + 
+  geom_point() +
+  stat_smooth(method = "lm", col = "blue") +
+  labs(title = "Salinity effect on total abundance")
+
+grid.arrange(plot1, plot2, nrow = 1)
+
+# linear model for total abundance
+model1 <- lm(z ~ x, data = test)
+summary(model1)
+model2 <- lm(z ~ y, data = test)
+summary(model2)
+model3 <- lm(z ~ x + y, data = test)
+summary(model3)
+```
+
+Sea surface temperature and salinity have different level of correlations in three regions. Temperature has stronger relationship with total abundance in south region (correlation = 0.50), while the negative effect is found in the north region (correlation = -0.23). Salinity also has stronger relationship with total abundance in the south region (0.32), while the negative effect is also found in the north region (correlation = -0.15). The temperature correlation is 0.2018549 and 0.2930805 for salinity in the middle region. Linear regression models only give one significant result that temperature has relatively higher effect on total abundance in the south region (R-squared = 0.2402).
+
+
+```{r,  eval=T}
+# Split the data by regions, 2 degrees of latitude as 1 region
+test_south <- test %>% filter(lat > -36 & lat < -34)
+test_middle <- test %>% filter(lat > -34 & lat < -32)
+test_north <- test %>% filter(lat > -32 & lat < -30)
+
+x_S = test_south$Temperature
+y_S = test_south$Salinity
+z_S = test_south$Total_abun
+cor.test(x_S,z_S)
+cor.test(y_S,z_S)
+
+x_M = test_middle$Temperature
+y_M = test_middle$Salinity
+z_M = test_middle$Total_abun
+cor.test(x_M,z_M)
+cor.test(y_M,z_M)
+
+x_N = test_north$Temperature
+y_N = test_north$Salinity
+z_N = test_north$Total_abun
+cor.test(x_N,z_N)
+cor.test(y_N,z_N)
+
+model_Temp_S <- lm(z_S ~ x_S, data = test_south)
+summary(model_Temp_S)
+
+model_Salt_S <- lm(z_S ~ y_S, data = test_south)
+summary(model_Salt_S)
+
+model_south <- lm(z_S ~ x_S + y_S, data = test_south)
+summary(model_south)
+
+model_Temp_M <- lm(z_M ~ x_M, data = test_middle)
+summary(model_Temp_M)
+
+model_Salt_M <- lm(z_M ~ y_M, data = test_middle)
+summary(model_Salt_M)
+
+model_middle <- lm(z_M ~ x_M + y_M, data = test_south)
+summary(model_middle)
+
+model_Temp_N <- lm(z_N ~ x_N, data = test_north)
+summary(model_Temp_N)
+
+model_Salt_N <- lm(z_N ~ y_N, data = test_north)
+summary(model_Salt_N)
+
+model_north <- lm(z_N ~ x_N + y_N, data = test_north)
+summary(model_north)
+
+
+plot_SouthTemp <- ggplot(test_south, aes(x = Temperature, y = Total_abun)) + 
+  geom_point() +
+  stat_smooth(method = "lm", col = "red") +
+  labs(title = "Temp vs Total abun at South")
+
+plot_SouthSalt <- ggplot(test_south, aes(x = Salinity, y = Total_abun)) + 
+  geom_point() +
+  stat_smooth(method = "lm", col = "blue") +
+  labs(title = "Salt vs Total abun at South")
+
+plot_MidTemp <- ggplot(test_middle, aes(x = Temperature, y = Total_abun)) + 
+  geom_point() +
+  stat_smooth(method = "lm", col = "red") +
+  labs(title = "Temp vs Total abun at Mid")
+
+plot_MidSalt <- ggplot(test_middle, aes(x = Salinity, y = Total_abun)) + 
+  geom_point() +
+  stat_smooth(method = "lm", col = "blue") +
+  labs(title = "Salt vs Total abun at Mid")
+
+plot_NorTemp <- ggplot(test_north, aes(x = Temperature, y = Total_abun)) + 
+  geom_point() +
+  stat_smooth(method = "lm", col = "red") +
+  labs(title = "Temp vs Total abun at North")
+
+plot_NorSalt <- ggplot(test_north, aes(x = Salinity, y = Total_abun)) + 
+  geom_point() +
+  stat_smooth(method = "lm", col = "blue") +
+  labs(title = "Salt vs Total abun at North")
+
+grid.arrange(plot_SouthTemp, plot_SouthSalt, plot_MidTemp, plot_MidSalt,plot_NorTemp, plot_NorSalt, nrow = 3)
+
+```
+
+Sea surface temperature has more important relationship with Myctophidae (correlation = 0.15) and Sardinops sagax (correlation = -0.15), and a weak negative relationship with Bothidae (correlation = -0.04). Salinity also has relatively stronger relationship compared to other species with Myctophidae (correlation = 0.28), Trachurus novaezelandiae (correlation = 0.18), and Pseudocaranx georgianus (correlation = 0.21). All linear regression models show minor effect from temperature and salinity on the abundance of these species.
+
+```{r,  eval=T}
+# First, calculate the abundance of each species and pick top 5
+larve_selected <- larvae %>% select(-c(Project:QC_flag))
+column_sums <- colSums(larve_selected, na.rm = TRUE)
+sorted_sums <- sort(column_sums, decreasing = TRUE)
+top_five_species <- head(sorted_sums, 5)
+
+# Create another dataset to work conveniently
+test_spe = data.frame(larvae$Latitude, larvae$Longitude, larvae$Year_Local, larvae$Month_Local, larvae$Temperature_degC, larvae$Salinity_psu, 
+                  larvae$ Myctophidae_Myctophidae_37122000, larvae$ Clupeidae_Sardinops.sagax_37085002, larvae$Carangidae_Pseudocaranx.georgianus_37337062,
+                  larvae$Carangidae_Trachurus.novaezelandiae_37337003, larvae$Bothidae_Bothidae_37460922)
+
+colnames(test_spe) = c("lat", "lon", "Year", "Month", "Temperature", "Salinity", 
+                   "Myctophidae", "Sardin", "Pseudocaranx", "Trachurus", "Bothidae")
+
+x_spe = test_spe$Temperature
+y_spe = test_spe$Salinity
+Myc = test_spe$Myctophidae
+Sard = test_spe$Sardin
+Pseudo = test_spe$Pseudocaranx
+Tra = test_spe$Trachurus
+Bot = test_spe$Bothidae
+
+cor.test(x_spe, Myc)
+cor.test(x_spe, Sard)
+cor.test(x_spe, Pseudo)
+cor.test(x_spe, Tra)
+cor.test(x_spe, Bot)
+
+cor.test(y_spe, Myc)
+cor.test(y_spe, Sard)
+cor.test(y_spe, Pseudo)
+cor.test(y_spe, Tra)
+cor.test(y_spe, Bot)
+
+model_Temp_Myc <- lm(Myc ~ x_spe, data = test_spe)
+summary(model_Temp_Myc)
+model_Temp_Sard <- lm(Sard ~ x_spe, data = test_spe)
+summary(model_Temp_Sard)
+model_Temp_Pseudo <- lm(Pseudo ~ x_spe, data = test_spe)
+summary(model_Temp_Pseudo)
+model_Temp_Tra <- lm(Tra ~ x_spe, data = test_spe)
+summary(model_Temp_Tra)
+model_Temp_Bot <- lm(Bot ~ x_spe, data = test_spe)
+summary(model_Temp_Bot)
+
+model_Salt_Myc <- lm(Myc ~ y_spe, data = test_spe)
+summary(model_Salt_Myc)
+model_Salt_Sard <- lm(Sard ~ y_spe, data = test_spe)
+summary(model_Salt_Sard)
+model_Salt_Pseudo <- lm(Pseudo ~ y_spe, data = test_spe)
+summary(model_Salt_Pseudo)
+model_Salt_Tra <- lm(Tra ~ y_spe, data = test_spe)
+summary(model_Salt_Tra)
+model_Salt_Bot <- lm(Bot ~ y_spe, data = test_spe)
+summary(model_Salt_Bot)
+
+model_Myc <- lm(Myc ~ x_spe + y_spe, data = test_spe)
+summary(model_Myc)
+model_Sard <- lm(Sard ~ x_spe + y_spe, data = test_spe)
+summary(model_Sard)
+model_Pseudo <- lm(Pseudo ~ x_spe + y_spe, data = test_spe)
+summary(model_Pseudo)
+model_Tra <- lm(Tra ~ x_spe + y_spe, data = test_spe)
+summary(model_Tra)
+model_Bot <- lm(Bot ~ x_spe + y_spe, data = test_spe)
+summary(model_Bot)
+
+plot_temp_Myc <- ggplot(test_spe, aes(x = Temperature, y = Myc)) + 
+  geom_point() +
+  stat_smooth(method = "lm", col = "red") +
+  labs(title = "Temp vs Myctophidae abundance")
+
+plot_salt_Myc <- ggplot(test_spe, aes(x = Salinity, y = Myc)) + 
+  geom_point() +
+  stat_smooth(method = "lm", col = "blue") +
+  labs(title = "Salt vs Myctophidae abundance")
+
+plot_temp_Sard <- ggplot(test_spe, aes(x = Temperature, y = Sard)) + 
+  geom_point() +
+  stat_smooth(method = "lm", col = "red") +
+  labs(title = "Temp vs Sardin abundance")
+
+plot_salt_Sard <- ggplot(test_spe, aes(x = Salinity, y = Sard)) + 
+  geom_point() +
+  stat_smooth(method = "lm", col = "blue") +
+  labs(title = "Salt vs Sardin abundance")
+
+plot_temp_Pseudo <- ggplot(test_spe, aes(x = Temperature, y = Pseudo)) + 
+  geom_point() +
+  stat_smooth(method = "lm", col = "red") +
+  labs(title = "Temp vs Pseudocaranx abundance")
+
+plot_salt_Pseudo <- ggplot(test_spe, aes(x = Salinity, y = Pseudo)) + 
+  geom_point() +
+  stat_smooth(method = "lm", col = "blue") +
+  labs(title = "Salt vs Pseudocaranx abundance")
+
+plot_temp_Tra <- ggplot(test_spe, aes(x = Temperature, y = Tra)) + 
+  geom_point() +
+  stat_smooth(method = "lm", col = "red") +
+  labs(title = "Temp vs Trachurus abundance")
+
+plot_salt_Tra <- ggplot(test_spe, aes(x = Salinity, y = Tra)) + 
+  geom_point() +
+  stat_smooth(method = "lm", col = "blue") +
+  labs(title = "Salt vs Trachurus abundance")
+
+plot_temp_Bot <- ggplot(test_spe, aes(x = Temperature, y = Bot)) + 
+  geom_point() +
+  stat_smooth(method = "lm", col = "red") +
+  labs(title = "Temp vs Bothidae abundance")
+
+plot_salt_Bot <- ggplot(test_spe, aes(x = Salinity, y = Bot)) + 
+  geom_point() +
+  stat_smooth(method = "lm", col = "blue") +
+  labs(title = "Salt vs Bothidae abundance")
+
+grid.arrange(plot_temp_Myc, plot_salt_Myc, plot_temp_Sard, plot_salt_Sard, plot_temp_Pseudo, 
+             plot_salt_Pseudo, plot_temp_Tra, plot_salt_Tra, plot_temp_Bot, plot_salt_Bot,
+             nrow = 5)
+```
+
+4. Discussion
+In total, deviating the assumption that larval abundance may be driven down by lower sea surface temperature and higher salinity due to upwelling current, most results show that neither temperature and salinity have significant effect on total abundance or species abundance. However, even though the effect is not obvious, higher sea surface temperature does have higher larval abundance, and the cooler water with lower abundance on the contrary. For salinity, higher salinity should be with lower abundance based on the assumption, but it turns out that higher salinity is with higher total abundance in general.
+
+Total abundance in the south region shows the highest sensitivity to temperature, following with positive correlation of salinity, which is deviated from the assumption. Though a negative correlation of salinity in the north region is found, relationship between temperature and total abundance is also negative, also deviating from the assumption. If we look into species, all species results do not follow the assumption too. In fact, though downwelling favourable winds and upwelling favourable winds have negative and positive effects on larval abundance respectively, sea surface temperature and salinity do not as change as we think that following with the current in Australia. It could be speculated that the most important factor brought by currents is possibly not temperature or salinity, and it becomes more possibly that weak moving ability is the key factor to affect larval abundance.
+
+5. Reference
+Doyle, M. J., Picquelle, S. J., Mier, K. L., Spillane, M. C., & Bond, N. A. (2009). Larval fish abundance and physical forcing in the Gulf of Alaska, 1981–2003. Progress in Oceanography, 80(3-4), 163-187.
+
+Schilling, H. T., Everett, J. D., Smith, J. A., Stewart, J., Hughes, J. M., Roughan, M., ... & Suthers, I. M. (2020). Multiple spawning events promote increased larval dispersal of a predatory fish in a western boundary current. Fisheries Oceanography, 29(4), 309-323.
+
+Schilling, H. T., Hinchliffe, C., Gillson, J. P., Miskiewicz, A. G., & Suthers, I. M. (2022). Coastal winds and larval fish abundance indicate a recruitment mechanism for southeast Australian estuarine fisheries. Fisheries Oceanography, 31(1), 40-55.
+
+Smith, J. A., Miskiewicz, A. G., Beckley, L. E., Everett, J. D., Garcia, V., Gray, C. A., ... & Suthers, I. M. (2018). A database of marine larval fish assemblages in Australian temperate and subtropical waters. Scientific Data, 5(1), 1-8.
+
+Suthers, I. M., Young, J. W., Baird, M. E., Roughan, M., Everett, J. D., Brassington, G. B., ... & Ridgway, K. (2011). The strengthening East Australian Current, its eddies and biological effects—an introduction and overview. Deep Sea Research Part II: Topical Studies in Oceanography, 58(5), 538-546.
